@@ -16,14 +16,21 @@ export class AppComponent implements OnInit {
 
   modalData = {
     startDate: '',
-    endDate: ''
+    endDate: '',
+    startTime: '',
+    endTime: ''
   };
 
   minEndDate = '';
+  minStartTime = '';
+  minEndTime = '';
+
 
   formErrors = {
     startDate: { valid: true, message: ''},
     endDate: { valid: true, message: ''},
+    startTime: { valid: true, message: ''},
+    endTime: {valid: true, message: ''},
   };
 
   minDate: string = '';
@@ -60,4 +67,50 @@ export class AppComponent implements OnInit {
       }
     }
   }
+
+  validateTime(type: string, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    // Limita o valor a 5 caracteres no formato HH:MM
+    if (value.length > 5) {
+      value = value.slice(0, 5);
+    }
+
+    // Atualiza o valor do campo e o modelo Angular
+    input.value = value;
+    if (type === 'start') {
+      this.modalData.startTime = value;
+    } else if (type === 'end') {
+      this.modalData.endTime = value;
+    }
+
+    // Variáveis para obter o horário atual e a data de hoje
+    const currentDate = new Date();
+    const currentTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
+    const today = currentDate.toISOString().split('T')[0];
+
+    // Validação para o horário de início
+    if (type === 'start') {
+      if (this.modalData.startDate === today && value < currentTime) {
+        // Caso a data seja hoje, o horário de início não pode ser anterior ao horário atual
+        this.formErrors.startTime = { valid: false, message: 'O horário de início não pode ser anterior ao horário atual.' };
+      } else {
+        this.formErrors.startTime = { valid: true, message: '' };
+      }
+    }
+
+    // Validação para o horário de fim
+    if (type === 'end') {
+      const isSameDay = this.modalData.endDate === this.modalData.startDate;
+
+      if (isSameDay && value <= this.modalData.startTime) {
+        // Caso a data de fim seja a mesma do início, o horário de fim deve ser posterior ao horário de início
+        this.formErrors.endTime = { valid: false, message: 'O horário de fim deve ser posterior ao horário de início.' };
+      } else {
+        this.formErrors.endTime = { valid: true, message: '' };
+      }
+    }
+  }
+
 }

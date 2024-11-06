@@ -28,3 +28,40 @@
     {{ formErrors.endDate.message }}
   </span>
 </div>
+
+
+
+<div class="input-container">
+  <label for="event-start-time" class="input-label">Horário*</label>
+  <div class="input-group event-input-container">
+    <div [style]="!formErrors.startTime.valid && formErrors.startTime ? 'border-color: red' : ''"
+      class="input-group-prepend event-input-prepend">
+      <i class="bi bi-clock"></i>
+    </div>
+    <input type="time" [(ngModel)]="modalData.startTime" id="event-start-time" placeholder="Início do evento"
+      [min]="minStartTime" class="form-control event-input" (input)="validateTime('start', $event)" />
+  </div>
+  <span class="error-message" *ngIf="!formErrors.startTime.valid && formErrors.startTime.message">
+    {{ formErrors.startTime.message }}
+  </span>
+  <span class="tip-message" *ngIf="formErrors.startDate.valid">
+    Início
+  </span>
+</div>
+<h3>à</h3>
+<div class="input-container">
+  <label for="event-end-time" class="input-label invisible">Fim do evento</label>
+  <div class="input-group event-input-container">
+    <div [style]="!formErrors.endTime.valid && formErrors.endTime ? 'border-color: red' : ''"
+      class="input-group-prepend event-input-prepend">
+      <i class="bi bi-clock"></i>
+    </div>
+    <input type="time" [(ngModel)]="modalData.endTime" id="event-end-time" placeholder="Fim do evento"
+      [min]="minEndTime" class="form-control event-input" (input)="validateTime('end', $event)" />
+  </div>
+  <span class="error-message" *ngIf="!formErrors.endTime.valid && formErrors.endTime.message">
+    {{ formErrors.endTime.message }}
+  </span>
+  <span class="tip-message" *ngIf="formErrors.endTime.valid">
+    Fim
+  </span>
